@@ -1,3 +1,9 @@
 .menuprincipal{
     background-color: gray;
 }
+
+.imagemCard{
+    height: 19rem;
+    width: 18rem;
+    align-self: center;
+}
