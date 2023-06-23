@@ -7,3 +7,13 @@
     width: 18rem;
     align-self: center;
 }
+
+.imagemProduto{
+    height: 45rem;
+    width: 100%;
+    align-self: center;
+}
+
+.containerProduto{
+    height: 94vh;
+}
