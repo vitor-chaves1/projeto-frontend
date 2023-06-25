@@ -17,3 +17,7 @@
 .containerProduto{
     height: 94vh;
 }
+
+.imagemCarrinho{
+    max-width: 100px;
+}

@@ -1,10 +1,10 @@
-import React from "react";
+import React, {useState} from "react";
 import produtos from './produtos.json';
 import { useParams } from "react-router-dom";
 
-const Produto = () => {
+const Produto = ({adicionar}) => {
     const { id } = useParams();
-    let p = produtos[id - 1]
+    let p = produtos[id - 1];
     return (
         <>
             <div className="container-fluid bg-secondary containerProduto">
@@ -22,7 +22,7 @@ const Produto = () => {
                             <div className="small mb-1 mt-5">Quantidade</div>
                             <div className="d-grid gap-2">
                                 <input className="form-control text-center mb-1" id="quantidadeProduto" type="num" defaultValue="1" />
-                                <button className="btn btn-success flex-shrink-0" type="button">Adicionar ao Carrinho</button>
+                                <button className="btn btn-success flex-shrink-0" type="button" onClick={() => adicionar(p)}>Adicionar ao Carrinho</button>
                             </div>
                         </div>
                     </div>
