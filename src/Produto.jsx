@@ -1,11 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc, collection, updateDoc, arrayUnion, query, where, getDocs } from "firebase/firestore";
 import { db } from "./firebaseConfig";
+import { AuthGoogleContext } from "./authGoogle";
 
-const Produto = ({ adicionar }) => {
+const Produto = () => {
     const { id } = useParams();
     const [produto, setProduto] = useState(null);
+    const { user } = useContext(AuthGoogleContext)
+    const [inputQuantidade, setInputQuantidade] = useState(1);
 
     useEffect(() => {
         const fetchDetalhesProdutos = async () => {
@@ -26,6 +29,70 @@ const Produto = ({ adicionar }) => {
 
         fetchDetalhesProdutos();
     }, [id]);
+
+    const adicionarAoCarrinho = async () => {
+        try {
+            const idCliente = user.uid;
+            const quantidade = parseInt(inputQuantidade);
+
+            const compraRef = collection(db, "compra");
+            const q = query(compraRef, where("ID_cliente", "==", idCliente));
+            const querySnapshot = await getDocs(q);
+
+            const productsRef = collection(db, "products");
+            const productDoc = await getDoc(doc(productsRef, id));
+            const idProduto = productDoc.data().id;
+
+
+            if (querySnapshot.empty) {
+                const novaCompraRef = doc(compraRef);
+                const idCompra = novaCompraRef.id;
+
+                await setDoc(novaCompraRef, {
+                    ID_compra: idCompra,
+                    ID_cliente: idCliente,
+                    produtos: [
+                        {
+                            ID_produto: idProduto,
+                            quantidade: quantidade,
+                        },
+                    ],
+                });
+
+                console.log("Nova compra criada e produto adicionado ao carrinho");
+            } else {
+                // Verificar se o produto já está no carrinho
+                const compraDoc = querySnapshot.docs[0];
+                const compraId = compraDoc.id;
+                const produtos = compraDoc.data().produtos;
+          
+                const produtoIndex = produtos.findIndex((produto) => produto.ID_produto == idProduto);
+          
+                if (produtoIndex !== -1) {
+                  // Atualizar a quantidade do produto
+                  produtos[produtoIndex].quantidade = quantidade;
+          
+                  await updateDoc(doc(db, "compra", compraId), {
+                    produtos: produtos,
+                  });
+          
+                  console.log("Quantidade do produto atualizada no carrinho");
+                } else {
+                  // Adicionar o produto ao carrinho
+                  await updateDoc(doc(db, "compra", compraId), {
+                    produtos: arrayUnion({
+                      ID_produto: idProduto,
+                      quantidade: quantidade,
+                    }),
+                  });
+          
+                  console.log("Produto adicionado ao carrinho existente");
+                }}
+        } catch (error) {
+            console.log("Erro ao adicionar o produto ao carrinho", error);
+        }
+
+    };
 
     if (!produto) {
         return <div className="container-fluid bg-secondary carregandoProduto">
@@ -50,8 +117,8 @@ const Produto = ({ adicionar }) => {
 
                             <div className="small mb-1 mt-5">Quantidade</div>
                             <div className="d-grid gap-2">
-                                <input className="form-control text-center mb-1" id="quantidadeProduto" type="num" defaultValue="1" />
-                                <button className="btn btn-success flex-shrink-0" type="button" onClick={() => adicionar(produto)}>Adicionar ao Carrinho</button>
+                                <input className="form-control text-center mb-1" type="number" min="1" value={inputQuantidade} onChange={(e) => setInputQuantidade(e.target.value)} />
+                                <button className="btn btn-success flex-shrink-0" type="button" onClick={() => adicionarAoCarrinho()}>Adicionar ao Carrinho</button>
                             </div>
                         </div>
                     </div>
