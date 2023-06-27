@@ -7,7 +7,7 @@ import { AuthGoogleContext } from "./authGoogle";
 const Produto = () => {
     const { id } = useParams();
     const [produto, setProduto] = useState(null);
-    const { user } = useContext(AuthGoogleContext)
+    const { user, signed } = useContext(AuthGoogleContext)
     const [inputQuantidade, setInputQuantidade] = useState(1);
 
     useEffect(() => {
@@ -118,7 +118,13 @@ const Produto = () => {
                             <div className="small mb-1 mt-5">Quantidade</div>
                             <div className="d-grid gap-2">
                                 <input className="form-control text-center mb-1" type="number" min="1" value={inputQuantidade} onChange={(e) => setInputQuantidade(e.target.value)} />
-                                <button className="btn btn-success flex-shrink-0" type="button" onClick={() => adicionarAoCarrinho()}>Adicionar ao Carrinho</button>
+                                <button className="btn btn-success flex-shrink-0" type="button" onClick={() => {
+                                    if (signed){
+                                        adicionarAoCarrinho()   
+                                    } else {
+                                        alert("Para adicionar um produto ao carrinho é necessário fazer Login")
+                                    }    
+                                }}>Adicionar ao Carrinho</button>
                             </div>
                         </div>
                     </div>

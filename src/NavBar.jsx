@@ -20,8 +20,8 @@ const NavBar = () => {
                             <div className="navbar-nav">
                                 <Link className="nav-link active" aria-current="page" to="/">Home</Link>
                                 <Link className="nav-link" to="/loja">Produtos</Link>
-                                <button className="btn btn-outline-success" onClick={() => loginGoogle()}>Logar com Google</button>
-                                <Link to="/carrinho" className="btn btn-outline-success ms-2">Meu Carrinho</Link>
+                                <button className="btn btn-success" onClick={() => loginGoogle()}>Logar com Google</button>
+                                <button className="btn btn-outline-secondary ms-2 disabled">Meu Carrinho</button>
                             </div>
                         </div>
                     </div>
@@ -42,7 +42,7 @@ const NavBar = () => {
                                 <Link className="nav-link active" aria-current="page" to="/">Home</Link>
                                 <Link className="nav-link" to="/loja">Produtos</Link>
                                 <Link className="btn btn-outline-danger" to="/" onClick={() => signOut()}>Sair</Link>
-                                <Link to="/carrinho" className="btn btn-outline-success ms-2">Meu Carrinho</Link>
+                                <Link to="/carrinho" className="btn btn-success ms-2">Meu Carrinho</Link>
                             </div>
                         </div>
                     </div>
