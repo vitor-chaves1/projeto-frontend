@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { collection, query, where, getDocs, doc, getDoc } from "firebase/firestore";
+import { collection, query, where, getDocs, doc, updateDoc, deleteField } from "firebase/firestore";
 import { db } from "./firebaseConfig";
 import { AuthGoogleContext } from "./authGoogle";
 
@@ -59,6 +59,34 @@ const Carrinho = () => {
         return precoTotal.toFixed(2);
     };
 
+    const removerItem = async (produtoId) => {
+        try {
+          const idCliente = user.uid;
+          const q = query(collection(db, "compra"), where("ID_cliente", "==", idCliente));
+          const compraSnapshot = await getDocs(q);
+          
+          if (!compraSnapshot.empty) {
+            const compraDoc = compraSnapshot.docs[0];
+            const compraId = compraDoc.id
+
+            const produtosRef = compraDoc.data().produtos;
+            const produtoIndex = produtosRef.findIndex((produto) => produto.ID_produto == produtoId);
+            //remover produto
+            produtosRef.splice(produtoIndex,1)
+
+            //atualizar documento
+            await updateDoc(doc(db, "compra", compraId),{
+                produtos: produtosRef,
+            });
+                setCarrinho((carrinhoAntigo) => carrinhoAntigo.filter((produto) => produto.id !== produtoId));
+                console.log("Produto removido do carrinho");
+          }
+        } catch (error) {
+          console.log("Erro ao remover o produto do carrinho", error);
+        }
+      };
+      
+
     return (
         <div className="container-fluid bg-secondary pb-2">
             <div className='container'>
@@ -79,7 +107,7 @@ const Carrinho = () => {
                                             <p>Subtotal R$ {(produto.quantidade * produto.preco).toFixed(2)}</p>
                                         </div>
                                     </div>
-                                    <button className="btn btn-danger">Remover</button>
+                                    <button className="btn btn-danger" onClick={()=>{removerItem(produto.id)}}>Remover</button>
                                 </li>
                             ))}
                         </ul>
