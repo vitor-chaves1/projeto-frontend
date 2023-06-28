@@ -10,7 +10,7 @@ const NavBar = () => {
     if (!signed) {
         return (
             <React.Fragment>
-                <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+                <nav className="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
                     <div className="container-fluid">
                         <Link className="navbar-brand" to="/">Projeto Loja</Link>
                         <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
@@ -18,10 +18,10 @@ const NavBar = () => {
                         </button>
                         <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
                             <div className="navbar-nav">
-                                <Link className="nav-link active" aria-current="page" to="/">Home</Link>
+                                <Link className="nav-link" aria-current="page" to="/">Home</Link>
                                 <Link className="nav-link" to="/loja">Produtos</Link>
-                                <button className="btn btn-success" onClick={() => loginGoogle()}>Logar com Google</button>
-                                <button className="btn btn-outline-secondary ms-2 disabled">Meu Carrinho</button>
+                                <button className="btn btn-success mx-2" onClick={() => loginGoogle()}>Logar com Google</button>
+                                <button className="btn btn-outline-secondary mx-2 disabled">Meu Carrinho</button>
                             </div>
                         </div>
                     </div>
@@ -31,7 +31,7 @@ const NavBar = () => {
     } else {
         return (
             <React.Fragment>
-                <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+                <nav className="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
                     <div className="container-fluid">
                         <Link className="navbar-brand" to="/">Projeto Loja</Link>
                         <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
@@ -39,10 +39,10 @@ const NavBar = () => {
                         </button>
                         <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
                             <div className="navbar-nav">
-                                <Link className="nav-link active" aria-current="page" to="/">Home</Link>
+                                <Link className="nav-link" aria-current="page" to="/">Home</Link>
                                 <Link className="nav-link" to="/loja">Produtos</Link>
-                                <Link className="btn btn-outline-danger" to="/" onClick={() => signOut()}>Sair</Link>
-                                <Link to="/carrinho" className="btn btn-success ms-2">Meu Carrinho</Link>
+                                <Link className="btn btn-outline-danger mx-2" to="/" onClick={() => signOut()}>Sair</Link>
+                                <Link to="/carrinho" className="btn btn-success mx-2">Meu Carrinho</Link>
                             </div>
                         </div>
                     </div>
