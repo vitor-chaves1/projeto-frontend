@@ -35,7 +35,7 @@ const Produto = () => {
             const idCliente = user.uid;
             const quantidade = parseInt(inputQuantidade);
 
-            const compraRef = collection(db, "compra");
+            const compraRef = collection(db, "compra_ativa");
             const q = query(compraRef, where("ID_cliente", "==", idCliente));
             const querySnapshot = await getDocs(q);
 
@@ -72,14 +72,14 @@ const Produto = () => {
                   // Atualizar a quantidade do produto
                   produtos[produtoIndex].quantidade = quantidade;
           
-                  await updateDoc(doc(db, "compra", compraId), {
+                  await updateDoc(doc(db, "compra_ativa", compraId), {
                     produtos: produtos,
                   });
           
                   console.log("Quantidade do produto atualizada no carrinho");
                 } else {
                   // Adicionar o produto ao carrinho
-                  await updateDoc(doc(db, "compra", compraId), {
+                  await updateDoc(doc(db, "compra_ativa", compraId), {
                     produtos: arrayUnion({
                       ID_produto: idProduto,
                       quantidade: quantidade,

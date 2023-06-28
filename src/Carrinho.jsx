@@ -1,17 +1,19 @@
 import React, { useContext, useEffect, useState } from "react";
-import { collection, query, where, getDocs, doc, updateDoc, deleteField } from "firebase/firestore";
+import { collection, query, where, getDocs, doc, updateDoc, deleteField, deleteDoc, setDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "./firebaseConfig";
 import { AuthGoogleContext } from "./authGoogle";
+import { Navigate } from "react-router";
 
 const Carrinho = () => {
     const { user } = useContext(AuthGoogleContext)
     const [carrinho, setCarrinho] = useState([]);
+    let precoPedido;
 
     useEffect(() => {
         const fetchCarrinho = async () => {
             const idCliente = user.uid;
 
-            const q = query(collection(db, "compra"), where("ID_cliente", "==", idCliente));
+            const q = query(collection(db, "compra_ativa"), where("ID_cliente", "==", idCliente));
             const querySnapshot = await getDocs(q);
 
             if (!querySnapshot.empty) {
@@ -56,13 +58,14 @@ const Carrinho = () => {
         for (const produto of carrinho) {
             precoTotal += produto.preco * produto.quantidade;
         }
+        precoPedido = precoTotal
         return precoTotal.toFixed(2);
     };
 
     const removerItem = async (produtoId) => {
         try {
           const idCliente = user.uid;
-          const q = query(collection(db, "compra"), where("ID_cliente", "==", idCliente));
+          const q = query(collection(db, "compra_ativa"), where("ID_cliente", "==", idCliente));
           const compraSnapshot = await getDocs(q);
           
           if (!compraSnapshot.empty) {
@@ -75,7 +78,7 @@ const Carrinho = () => {
             produtosRef.splice(produtoIndex,1)
 
             //atualizar documento
-            await updateDoc(doc(db, "compra", compraId),{
+            await updateDoc(doc(db, "compra_ativa", compraId),{
                 produtos: produtosRef,
             });
                 setCarrinho((carrinhoAntigo) => carrinhoAntigo.filter((produto) => produto.id !== produtoId));
@@ -86,6 +89,58 @@ const Carrinho = () => {
         }
       };
       
+
+    const finalizarCompra = async () => {
+        try {
+            const idCliente = user.uid;
+            const q = query(collection(db, "compra_ativa"), where("ID_cliente", "==", idCliente));
+            const compraSnapshot = await getDocs(q);
+
+            const pedidosRef = collection(db,"pedidos")
+            const historicoComprasRef = collection(db,"historico_Compras")
+            if(!compraSnapshot.empty){
+                const compraDoc = compraSnapshot.docs[0];
+                const compraId = compraDoc.id
+                const compraProdutos = compraDoc.data().produtos
+
+                const novoPedidoDoc = doc(pedidosRef)
+                const historicoComprasDoc = doc(historicoComprasRef)
+                const idPedido = novoPedidoDoc.id
+
+                // cria um novo pedido
+                await setDoc(novoPedidoDoc,{
+                    ID_pedido: idPedido,
+                    ID_compra: compraId,
+                    ID_cliente: idCliente,
+                    total_a_pagar: precoPedido,
+                    email: user.email,
+                    data: serverTimestamp()
+                })
+                console.log("Pedido realizado")
+                
+                // cria uma nova coleçao historico compras
+                await setDoc(historicoComprasDoc,{
+                    ID_compra: compraId,
+                    ID_cliente: idCliente,
+                    produtos: compraProdutos
+                })
+                console.log("historico criado")
+
+                //deleta compra_ativa
+                await deleteDoc(doc(collection(db,"compra_ativa"),compraId));
+                console.log("compra_ativa deletado")
+
+                //apaga a lista da tela
+                setCarrinho([])
+                console.log("lista apagada")
+            } else {
+                console.log('carrinho vazio')
+            }
+
+        } catch (error) {
+            console.log("Erro ao finalizar compra", error)
+        }
+    }
 
     return (
         <div className="container-fluid bg-secondary pb-2">
@@ -112,8 +167,12 @@ const Carrinho = () => {
                             ))}
                         </ul>
                         <div className="mt-3">
-                            <h4>Preço Total: R$ {calcularPrecoTotal()}</h4>
-                            <button className="btn btn-success">Finalizar Compra</button>
+                            <h4>Preço Total: R$ 
+                                <span id = "precoTotal">
+                                    {calcularPrecoTotal()}
+                                </span>
+                            </h4>
+                            <button className="btn btn-success" onClick={()=>{finalizarCompra()}}>Finalizar Compra</button>
                         </div>
                     </>
                 )}
