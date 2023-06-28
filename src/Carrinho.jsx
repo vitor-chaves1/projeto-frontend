@@ -32,7 +32,7 @@ const Carrinho = () => {
                         const produtoId = x.id
                         const produtoData = x.data();
                         // verifica quais produtos estao dentro da compra
-                        if (compraProdutoId === produtoId) {
+                        if (compraProdutoId === parseInt(produtoId)) {
                             const produto = {
                                 id: produtoId,
                                 nome: produtoData.nome,
