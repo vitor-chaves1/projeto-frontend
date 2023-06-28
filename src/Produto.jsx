@@ -9,6 +9,8 @@ const Produto = () => {
     const [produto, setProduto] = useState(null);
     const { user, signed } = useContext(AuthGoogleContext)
     const [inputQuantidade, setInputQuantidade] = useState(1);
+    const [alertaConfirmacao, setAlertaConfirmacao] = useState(false);
+
 
     useEffect(() => {
         const fetchDetalhesProdutos = async () => {
@@ -88,6 +90,7 @@ const Produto = () => {
           
                   console.log("Produto adicionado ao carrinho existente");
                 }}
+                setAlertaConfirmacao(true)
         } catch (error) {
             console.log("Erro ao adicionar o produto ao carrinho", error);
         }
@@ -125,6 +128,12 @@ const Produto = () => {
                                         alert("Para adicionar um produto ao carrinho é necessário fazer Login")
                                     }    
                                 }}>Adicionar ao Carrinho</button>
+                                {alertaConfirmacao && (
+                                    <div className="alert alert-success alert-dismissible fade show" role="alert">
+                                        Produto adicionado ao carrinho!
+                                        <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close" onClick={()=>setAlertaConfirmacao(false)}></button>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>

@@ -7,6 +7,7 @@ import { Navigate } from "react-router";
 const Carrinho = () => {
     const { user } = useContext(AuthGoogleContext)
     const [carrinho, setCarrinho] = useState([]);
+    const [alertaConfirmacao, setAlertaConfirmacao] = useState(false);
     let precoPedido;
 
     useEffect(() => {
@@ -132,7 +133,8 @@ const Carrinho = () => {
 
                 //apaga a lista da tela
                 setCarrinho([])
-                console.log("lista apagada")
+                setAlertaConfirmacao(true)
+                //console.log("lista apagada")
             } else {
                 console.log('carrinho vazio')
             }
@@ -147,7 +149,16 @@ const Carrinho = () => {
             <div className='container'>
                 <h1>Meu Carrinho</h1>
                 {carrinho.length === 0 ? (
-                    <p>O carrinho está vazio.</p>
+                    <>
+                        {alertaConfirmacao ? (
+                            <div className="alert alert-success alert-dismissible fade show" role="alert">
+                                Compra realizada com sucesso!
+                               <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close" onClick={()=>setAlertaConfirmacao(false)}></button>
+                            </div>
+                        ):(
+                            <p>O carrinho está vazio.</p>
+                        )}
+                    </>   
                 ) : (
                     <>
                         <ul className="list-group">
