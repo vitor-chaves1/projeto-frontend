@@ -1,7 +1,3 @@
-.menuprincipal{
-    background-color: gray;
-}
-
 .imagemCard{
     height: 19rem;
     width: 18rem;
@@ -24,4 +20,8 @@
 
 .carregandoProduto{
     height: 94vh;
+}
+
+body{
+    background-color: #6c757d;
 }
