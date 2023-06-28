@@ -1,8 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
-import { collection, query, where, getDocs, doc, updateDoc, deleteField, deleteDoc, setDoc, serverTimestamp } from "firebase/firestore";
+import { collection, query, where, getDocs, doc, updateDoc, deleteDoc, setDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "./firebaseConfig";
 import { AuthGoogleContext } from "./authGoogle";
-import { Navigate } from "react-router";
 
 const Carrinho = () => {
     const { user } = useContext(AuthGoogleContext)
@@ -19,21 +18,21 @@ const Carrinho = () => {
 
             if (!querySnapshot.empty) {
                 const compraDoc = querySnapshot.docs[0];
-                const compraId = compraDoc.id;
+                //const compraId = compraDoc.id;
                 const compraProdutos = compraDoc.data().produtos;
                 //console.log(compraProdutos)
 
                 const produtosSnapshot = await getDocs(collection(db, "products"));
                 const produtos = [];
 
-                for (const elemento of compraProdutos){
+                for (const elemento of compraProdutos) {
                     const compraProdutoId = elemento.ID_produto
                     const compraProdutoQuantidade = elemento.quantidade
-                    for (const x of produtosSnapshot.docs){
+                    for (const x of produtosSnapshot.docs) {
                         const produtoId = x.id
                         const produtoData = x.data();
                         // verifica quais produtos estao dentro da compra
-                        if( compraProdutoId == produtoId){
+                        if (compraProdutoId === produtoId) {
                             const produto = {
                                 id: produtoId,
                                 nome: produtoData.nome,
@@ -52,7 +51,7 @@ const Carrinho = () => {
         };
 
         fetchCarrinho();
-    }, []);
+    }, [user.uid]);
 
     const calcularPrecoTotal = () => {
         let precoTotal = 0;
@@ -65,31 +64,31 @@ const Carrinho = () => {
 
     const removerItem = async (produtoId) => {
         try {
-          const idCliente = user.uid;
-          const q = query(collection(db, "compra_ativa"), where("ID_cliente", "==", idCliente));
-          const compraSnapshot = await getDocs(q);
-          
-          if (!compraSnapshot.empty) {
-            const compraDoc = compraSnapshot.docs[0];
-            const compraId = compraDoc.id
+            const idCliente = user.uid;
+            const q = query(collection(db, "compra_ativa"), where("ID_cliente", "==", idCliente));
+            const compraSnapshot = await getDocs(q);
 
-            const produtosRef = compraDoc.data().produtos;
-            const produtoIndex = produtosRef.findIndex((produto) => produto.ID_produto == produtoId);
-            //remover produto
-            produtosRef.splice(produtoIndex,1)
+            if (!compraSnapshot.empty) {
+                const compraDoc = compraSnapshot.docs[0];
+                const compraId = compraDoc.id
 
-            //atualizar documento
-            await updateDoc(doc(db, "compra_ativa", compraId),{
-                produtos: produtosRef,
-            });
+                const produtosRef = compraDoc.data().produtos;
+                const produtoIndex = produtosRef.findIndex((produto) => produto.ID_produto === produtoId);
+                //remover produto
+                produtosRef.splice(produtoIndex, 1)
+
+                //atualizar documento
+                await updateDoc(doc(db, "compra_ativa", compraId), {
+                    produtos: produtosRef,
+                });
                 setCarrinho((carrinhoAntigo) => carrinhoAntigo.filter((produto) => produto.id !== produtoId));
                 console.log("Produto removido do carrinho");
-          }
+            }
         } catch (error) {
-          console.log("Erro ao remover o produto do carrinho", error);
+            console.log("Erro ao remover o produto do carrinho", error);
         }
-      };
-      
+    };
+
 
     const finalizarCompra = async () => {
         try {
@@ -97,9 +96,9 @@ const Carrinho = () => {
             const q = query(collection(db, "compra_ativa"), where("ID_cliente", "==", idCliente));
             const compraSnapshot = await getDocs(q);
 
-            const pedidosRef = collection(db,"pedidos")
-            const historicoComprasRef = collection(db,"historico_Compras")
-            if(!compraSnapshot.empty){
+            const pedidosRef = collection(db, "pedidos")
+            const historicoComprasRef = collection(db, "historico_Compras")
+            if (!compraSnapshot.empty) {
                 const compraDoc = compraSnapshot.docs[0];
                 const compraId = compraDoc.id
                 const compraProdutos = compraDoc.data().produtos
@@ -109,7 +108,7 @@ const Carrinho = () => {
                 const idPedido = novoPedidoDoc.id
 
                 // cria um novo pedido
-                await setDoc(novoPedidoDoc,{
+                await setDoc(novoPedidoDoc, {
                     ID_pedido: idPedido,
                     ID_compra: compraId,
                     ID_cliente: idCliente,
@@ -118,9 +117,9 @@ const Carrinho = () => {
                     data: serverTimestamp()
                 })
                 console.log("Pedido realizado")
-                
+
                 // cria uma nova coleçao historico compras
-                await setDoc(historicoComprasDoc,{
+                await setDoc(historicoComprasDoc, {
                     ID_compra: compraId,
                     ID_cliente: idCliente,
                     produtos: compraProdutos
@@ -128,7 +127,7 @@ const Carrinho = () => {
                 console.log("historico criado")
 
                 //deleta compra_ativa
-                await deleteDoc(doc(collection(db,"compra_ativa"),compraId));
+                await deleteDoc(doc(collection(db, "compra_ativa"), compraId));
                 console.log("compra_ativa deletado")
 
                 //apaga a lista da tela
@@ -153,12 +152,12 @@ const Carrinho = () => {
                         {alertaConfirmacao ? (
                             <div className="alert alert-success alert-dismissible fade show" role="alert">
                                 Compra realizada com sucesso!
-                               <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close" onClick={()=>setAlertaConfirmacao(false)}></button>
+                                <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close" onClick={() => setAlertaConfirmacao(false)}></button>
                             </div>
-                        ):(
+                        ) : (
                             <p>O carrinho está vazio.</p>
                         )}
-                    </>   
+                    </>
                 ) : (
                     <>
                         <ul className="list-group">
@@ -173,17 +172,17 @@ const Carrinho = () => {
                                             <p>Subtotal R$ {(produto.quantidade * produto.preco).toFixed(2)}</p>
                                         </div>
                                     </div>
-                                    <button className="btn btn-danger" onClick={()=>{removerItem(produto.id)}}>Remover</button>
+                                    <button className="btn btn-danger" onClick={() => { removerItem(produto.id) }}>Remover</button>
                                 </li>
                             ))}
                         </ul>
                         <div className="mt-3">
-                            <h4>Preço Total: R$ 
-                                <span id = "precoTotal">
+                            <h4>Preço Total: R$
+                                <span id="precoTotal">
                                     {calcularPrecoTotal()}
                                 </span>
                             </h4>
-                            <button className="btn btn-success" onClick={()=>{finalizarCompra()}}>Finalizar Compra</button>
+                            <button className="btn btn-success" onClick={() => { finalizarCompra() }}>Finalizar Compra</button>
                         </div>
                     </>
                 )}

@@ -67,30 +67,31 @@ const Produto = () => {
                 const compraDoc = querySnapshot.docs[0];
                 const compraId = compraDoc.id;
                 const produtos = compraDoc.data().produtos;
-          
-                const produtoIndex = produtos.findIndex((produto) => produto.ID_produto == idProduto);
-          
+
+                const produtoIndex = produtos.findIndex((produto) => produto.ID_produto === idProduto);
+
                 if (produtoIndex !== -1) {
-                  // Atualizar a quantidade do produto
-                  produtos[produtoIndex].quantidade = quantidade;
-          
-                  await updateDoc(doc(db, "compra_ativa", compraId), {
-                    produtos: produtos,
-                  });
-          
-                  console.log("Quantidade do produto atualizada no carrinho");
+                    // Atualizar a quantidade do produto
+                    produtos[produtoIndex].quantidade = quantidade;
+
+                    await updateDoc(doc(db, "compra_ativa", compraId), {
+                        produtos: produtos,
+                    });
+
+                    console.log("Quantidade do produto atualizada no carrinho");
                 } else {
-                  // Adicionar o produto ao carrinho
-                  await updateDoc(doc(db, "compra_ativa", compraId), {
-                    produtos: arrayUnion({
-                      ID_produto: idProduto,
-                      quantidade: quantidade,
-                    }),
-                  });
-          
-                  console.log("Produto adicionado ao carrinho existente");
-                }}
-                setAlertaConfirmacao(true)
+                    // Adicionar o produto ao carrinho
+                    await updateDoc(doc(db, "compra_ativa", compraId), {
+                        produtos: arrayUnion({
+                            ID_produto: idProduto,
+                            quantidade: quantidade,
+                        }),
+                    });
+
+                    console.log("Produto adicionado ao carrinho existente");
+                }
+            }
+            setAlertaConfirmacao(true)
         } catch (error) {
             console.log("Erro ao adicionar o produto ao carrinho", error);
         }
@@ -122,16 +123,16 @@ const Produto = () => {
                             <div className="d-grid gap-2">
                                 <input className="form-control text-center mb-1" type="number" min="1" value={inputQuantidade} onChange={(e) => setInputQuantidade(e.target.value)} />
                                 <button className="btn btn-success flex-shrink-0" type="button" onClick={() => {
-                                    if (signed){
-                                        adicionarAoCarrinho()   
+                                    if (signed) {
+                                        adicionarAoCarrinho()
                                     } else {
                                         alert("Para adicionar um produto ao carrinho é necessário fazer Login")
-                                    }    
+                                    }
                                 }}>Adicionar ao Carrinho</button>
                                 {alertaConfirmacao && (
                                     <div className="alert alert-success alert-dismissible fade show" role="alert">
                                         Produto adicionado ao carrinho!
-                                        <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close" onClick={()=>setAlertaConfirmacao(false)}></button>
+                                        <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close" onClick={() => setAlertaConfirmacao(false)}></button>
                                     </div>
                                 )}
                             </div>

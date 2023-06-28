@@ -12,16 +12,16 @@ export const AuthGoogleProvider = ({ children }) => {
     const auth = getAuth(app);
     const [user, setUser] = useState(null)
 
-    useEffect(()=>{
+    useEffect(() => {
         const loadStoreAuth = () => {
             const sessionToken = sessionStorage.getItem("@AuthFirebase:token")
             const sessionUser = sessionStorage.getItem("@AuthFirebase:user")
-            if (sessionToken && sessionUser){
+            if (sessionToken && sessionUser) {
                 setUser(sessionUser);
             }
         }
         loadStoreAuth()
-    },[])
+    }, [])
 
     const signInGoogle = () => {
         signInWithPopup(auth, provider)
@@ -33,18 +33,19 @@ export const AuthGoogleProvider = ({ children }) => {
                 sessionStorage.setItem("@AuthFirebase:token", token);
                 sessionStorage.setItem("@AuthFirebase:user", JSON.stringify(user));
             }).catch((error) => {
-                const errorCode = error.code;
-                const errorMessage = error.message;
-                const email = error.customData.email;
-                const credential = GoogleAuthProvider.credentialFromError(error);
+                //const errorCode = error.code;
+                //const errorMessage = error.message;
+                //const email = error.customData.email;
+                //const credential = GoogleAuthProvider.credentialFromError(error);
+                console.log(error)
             });
 
     }
 
-    function signOut(){
+    function signOut() {
         sessionStorage.clear();
         setUser(null);
-        return <Navigate to="/"/>
+        return <Navigate to="/" />
     }
 
     return (
