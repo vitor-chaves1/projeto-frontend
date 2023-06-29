@@ -1,0 +1,19 @@
+.imagemCard{
+    height: 19rem;
+    width: 18rem;
+    align-self: center;
+}
+
+.imagemProduto{
+    height: 45rem;
+    width: 100%;
+    align-self: center;
+}
+
+.imagemCarrinho{
+    max-width: 100px;
+}
+
+body{
+    background-color: #6c757d;
+}
