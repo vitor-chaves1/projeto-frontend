@@ -98,15 +98,15 @@ const Carrinho = () => {
             const q = query(collection(db, "compra_ativa"), where("ID_cliente", "==", idCliente));
             const compraSnapshot = await getDocs(q);
 
-            const pedidosRef = collection(db, "pedidos")
-            const historicoComprasRef = collection(db, "historico_Compras")
             if (!compraSnapshot.empty) {
                 const compraDoc = compraSnapshot.docs[0];
                 const compraId = compraDoc.id
                 const compraProdutos = compraDoc.data().produtos
 
+                const pedidosRef = collection(db, "pedidos")
+                const historicoComprasRef = doc(db, "historico_Compras", compraId)
+
                 const novoPedidoDoc = doc(pedidosRef)
-                const historicoComprasDoc = doc(historicoComprasRef)
                 const idPedido = novoPedidoDoc.id
 
                 // cria um novo pedido
@@ -121,8 +121,7 @@ const Carrinho = () => {
                 console.log("Pedido realizado")
 
                 // cria uma nova coleçao historico compras
-                await setDoc(historicoComprasDoc, {
-                    ID_compra: compraId,
+                await setDoc(historicoComprasRef, {
                     ID_cliente: idCliente,
                     produtos: compraProdutos
                 })
