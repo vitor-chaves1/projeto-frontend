@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { AuthGoogleContext } from "./authGoogle";
 
 const NavBar = () => {
-    const { signInGoogle, signed, signOut } = useContext(AuthGoogleContext)
+    const { signInGoogle, signed, logOut } = useContext(AuthGoogleContext)
     async function loginGoogle() {
         await signInGoogle();
     }
@@ -41,7 +41,7 @@ const NavBar = () => {
                             <div className="navbar-nav">
                                 <Link className="nav-link" aria-current="page" to="/">Home</Link>
                                 <Link className="nav-link" to="/loja">Produtos</Link>
-                                <Link className="btn btn-outline-danger mx-2" to="/" onClick={() => signOut()}>Sair</Link>
+                                <Link className="btn btn-outline-danger mx-2" to="/" onClick={() => logOut()}>Sair</Link>
                                 <Link to="/carrinho" className="btn btn-success mx-2">Meu Carrinho</Link>
                             </div>
                         </div>

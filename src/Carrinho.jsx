@@ -11,43 +11,45 @@ const Carrinho = () => {
 
     useEffect(() => {
         const fetchCarrinho = async () => {
-            const idCliente = user.uid;
+            try {
+                const idCliente = user.uid;
 
-            const q = query(collection(db, "compra_ativa"), where("ID_cliente", "==", idCliente));
-            const querySnapshot = await getDocs(q);
+                const q = query(collection(db, "compra_ativa"), where("ID_cliente", "==", idCliente));
+                const querySnapshot = await getDocs(q);
 
-            if (!querySnapshot.empty) {
-                const compraDoc = querySnapshot.docs[0];
-                //const compraId = compraDoc.id;
-                const compraProdutos = compraDoc.data().produtos;
-                //console.log(compraProdutos)
+                if (!querySnapshot.empty) {
+                    const compraDoc = querySnapshot.docs[0];
+                    //const compraId = compraDoc.id;
+                    const compraProdutos = compraDoc.data().produtos;
+                    //console.log(compraProdutos)
 
-                const produtosSnapshot = await getDocs(collection(db, "products"));
-                const produtos = [];
+                    const produtosSnapshot = await getDocs(collection(db, "products"));
+                    const produtos = [];
 
-                for (const elemento of compraProdutos) {
-                    const compraProdutoId = elemento.ID_produto
-                    const compraProdutoQuantidade = elemento.quantidade
-                    for (const x of produtosSnapshot.docs) {
-                        const produtoId = x.id
-                        const produtoData = x.data();
-                        // verifica quais produtos estao dentro da compra
-                        if (compraProdutoId === parseInt(produtoId)) {
-                            const produto = {
-                                id: produtoId,
-                                nome: produtoData.nome,
-                                preco: produtoData.preco,
-                                imagem: produtoData.imagem,
-                                quantidade: compraProdutoQuantidade,
+                    for (const elemento of compraProdutos) {
+                        const compraProdutoId = elemento.ID_produto
+                        const compraProdutoQuantidade = elemento.quantidade
+                        for (const x of produtosSnapshot.docs) {
+                            const produtoId = x.id
+                            const produtoData = x.data();
+                            // verifica quais produtos estao dentro da compra
+                            if (compraProdutoId === parseInt(produtoId)) {
+                                const produto = {
+                                    id: produtoId,
+                                    nome: produtoData.nome,
+                                    preco: produtoData.preco,
+                                    imagem: produtoData.imagem,
+                                    quantidade: compraProdutoQuantidade,
+                                }
+                                produtos.push(produto)
                             }
-                            produtos.push(produto)
                         }
                     }
+                    setCarrinho(produtos);
+                } else {
+                    console.log('query vazio')
                 }
-                setCarrinho(produtos);
-            } else {
-                console.log('query vazio')
-            }
+            } catch (error) {}
         };
 
         fetchCarrinho();
