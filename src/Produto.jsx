@@ -99,7 +99,7 @@ const Produto = () => {
     };
 
     if (!produto) {
-        return <div className="container-fluid bg-secondary carregandoProduto">
+        return <div className="container-fluid bg-secondary">
             <p>
                 Carregando detalhes do produto...
             </p>
@@ -107,7 +107,7 @@ const Produto = () => {
     }
     return (
         <>
-            <div className="container-fluid bg-secondary containerProduto">
+            <div className="container-fluid bg-secondary">
                 <div className="container bg-white">
                     <div className="row gx-4 gx-lg-5 align-items-center">
                         <div className="col-md-6"><img className="card-img-top mb-5 mb-md-0 imagemProduto" src={produto.imagem} alt="..." /></div>

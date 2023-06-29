@@ -10,16 +10,8 @@
     align-self: center;
 }
 
-.containerProduto{
-    height: 94vh;
-}
-
 .imagemCarrinho{
     max-width: 100px;
-}
-
-.carregandoProduto{
-    height: 94vh;
 }
 
 body{
