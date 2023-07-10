@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
-import NavBar from './NavBar'
-import Home from './Home'
-import Loja from './Loja'
-import Produto from './Produto'
-import Carrinho from './Carrinho'
+import NavBar from './Components/NavBar'
+import Home from './Pages/Home'
+import Loja from './Pages/Loja'
+import Produto from './Pages/Produto'
+import Carrinho from './Pages/Carrinho'
 import { Route, Routes } from "react-router"
 import { BrowserRouter } from 'react-router-dom'
-import { AuthGoogleProvider } from './authGoogle'
+import { AuthGoogleProvider } from './Services/authGoogle'
 
 const App = () => {
 

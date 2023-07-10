@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
-import { AuthGoogleContext } from "./authGoogle";
+import { AuthGoogleContext } from "../Services/authGoogle";
 
 const NavBar = () => {
     const { signInGoogle, signed, logOut } = useContext(AuthGoogleContext)

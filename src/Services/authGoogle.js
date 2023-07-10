@@ -1,6 +1,6 @@
 import { createContext, useEffect, useState } from "react";
 import { GoogleAuthProvider, onAuthStateChanged, signInWithRedirect, signOut } from "firebase/auth";
-import { auth } from "./firebaseConfig";
+import { auth } from "../Config/firebaseConfig";
 import { Navigate } from "react-router";
 
 export const AuthGoogleContext = createContext({})

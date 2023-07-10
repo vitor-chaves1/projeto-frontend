@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { collection, query, where, getDocs, doc, updateDoc, deleteDoc, setDoc, serverTimestamp } from "firebase/firestore";
-import { db } from "./firebaseConfig";
-import { AuthGoogleContext } from "./authGoogle";
+import { db } from "../Config/firebaseConfig";
+import { AuthGoogleContext } from "../Services/authGoogle";
 
 const Carrinho = () => {
     const { user } = useContext(AuthGoogleContext)

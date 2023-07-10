@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { doc, getDoc, setDoc, collection, updateDoc, arrayUnion, query, where, getDocs } from "firebase/firestore";
-import { db } from "./firebaseConfig";
-import { AuthGoogleContext } from "./authGoogle";
+import { db } from "../Config/firebaseConfig";
+import { AuthGoogleContext } from "../Services/authGoogle";
 
 const Produto = () => {
     const { id } = useParams();

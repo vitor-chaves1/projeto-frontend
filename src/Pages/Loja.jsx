@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { db } from "./firebaseConfig";
+import { db } from "../Config/firebaseConfig";
 import { collection, getDocs } from "firebase/firestore";
 
 const Loja = () => {
